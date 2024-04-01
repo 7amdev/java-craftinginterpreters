@@ -97,6 +97,8 @@ class Scanner {
                     // A comment goes until the end of the line.
                     while (peek() != '\n' && !isAtEnd())
                         advance();
+                } else if (match('*')) {
+                    skipBlockcomments();
                 } else {
                     addToken(TokenType.SLASH);
                 }
@@ -117,7 +119,7 @@ class Scanner {
                 } else if (isAlpha(c)) {
                     identifier();
                 } else {
-                    F7.error(line, "Unexpected character.");
+                    f7.error(line, "Unexpected character.");
                 }
                 break;
         }
@@ -158,7 +160,7 @@ class Scanner {
         }
 
         if (isAtEnd()) {
-            F7.error(line, "Unterminated string.");
+            f7.error(line, "Unterminated string.");
             return;
         }
 
@@ -168,6 +170,32 @@ class Scanner {
         // Trim the surrounding quotes.
         String value = source.substring(start + 1, current - 1);
         addToken(TokenType.STRING, value);
+    }
+
+    private void skipBlockcomments() {
+        int recursive = 1;
+        while (recursive > 0) {
+            if (isAtEnd()) {
+                f7.error(line, "Unterminated block comment");
+                return;
+            }
+            if (peek() == '*' && peekNext() == '/') {
+                recursive -= 1;
+                advance();
+                advance();
+                continue;
+            }
+            if (peek() == '/' && peekNext() == '*') {
+                recursive += 1;
+                advance();
+                advance();
+                continue;
+            }
+            if (peek() == '\n')
+                line++;
+
+            advance();
+        }
     }
 
     private boolean match(char expected) {
