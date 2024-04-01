@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class F7 {
+public class f7 {
     static Boolean hadError = false;
 
     public static void main(String[] args) throws IOException {
