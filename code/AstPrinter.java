@@ -11,6 +11,10 @@ public class AstPrinter implements Expr.Visitor<String> {
         return parenthesize(expr.operator.lexeme, expr.left, expr.right);
     }
 
+    public String visitConditionalExpr(Expr.Conditional expr) {
+        return parenthesize("if", expr.condition, expr.thenBranch, expr.elseBranch);
+    }
+
     @Override
     public String visitGroupingExpr(Expr.Grouping expr) {
         return parenthesize("group", expr.expression);
