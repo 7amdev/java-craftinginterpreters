@@ -14,6 +14,9 @@ public class Parser {
 
     Parser(List<Token> tokens) {
         this.tokens = tokens;
+        // for (Token t : tokens) {
+        // System.out.println(t);
+        // }
     }
 
     Expr parse() {
