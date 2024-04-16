@@ -1,5 +1,6 @@
 package code;
 
+import java.beans.Statement;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -46,8 +47,24 @@ public class f7 {
             if (line == null)
                 break;
 
-            run(line);
-            hadError = false;
+            // run(line);
+            Scanner scanner = new Scanner(line);
+            List<Token> tokens = scanner.scanTokens();
+
+            Parser parser = new Parser(tokens);
+            Object syntax = parser.parseRepl();
+
+            if (hadError)
+                continue;
+
+            if (syntax instanceof List) {
+                interpreter.interpret((List<Stmt>) syntax);
+            } else if (syntax instanceof Expr) {
+                String result = interpreter.interpret((Expr) syntax);
+                if (result != null) {
+                    System.out.println("= " + result);
+                }
+            }
         }
     }
 
@@ -56,15 +73,13 @@ public class f7 {
         List<Token> tokens = scanner.scanTokens();
 
         Parser parser = new Parser(tokens);
-        Expr expr = parser.parse();
+        List<Stmt> statements = parser.parse();
 
         if (hadError) {
             return;
         }
 
-        // System.out.println(new AstPrinter().print(expr));
-        interpreter.interpret(expr);
-
+        interpreter.interpret(statements);
     }
 
     static void error(int line, String message) {
@@ -75,7 +90,7 @@ public class f7 {
         if (token.type == TokenType.EOF) {
             report(token.line, " at end", message);
         } else {
-            report(token.line, "at '" + token.lexeme + "'", message);
+            report(token.line, " at '" + token.lexeme + "'", message);
         }
     }
 
