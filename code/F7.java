@@ -42,10 +42,11 @@ public class f7 {
         BufferedReader reader = new BufferedReader(input);
 
         for (;;) {
+            hadError = false;
             System.out.print("> ");
             String line = reader.readLine();
-            if (line == null)
-                break;
+            // if (line == null)
+            // break;
 
             // run(line);
             Scanner scanner = new Scanner(line);

@@ -18,12 +18,14 @@ public class generate_ast {
                 "Conditional   : Expr condition, Expr thenBranch, Expr elseBranch",
                 "Grouping      : Expr expression",
                 "Literal       : Object value",
+                "Logical       : Expr left, Token operator, Expr right",
                 "Unary         : Token operator, Expr right",
                 "Variable      : Token name"));
 
         defineAst(outputDir, "Stmt", Arrays.asList(
                 "Block             : List<Stmt> statements",
                 "Expression        : Expr expression",
+                "If                : Expr condition, Stmt thenBranch, Stmt elseBranch",
                 "Print             : Expr expression",
                 "Var               : Token name, Expr initializer"));
     }
