@@ -43,12 +43,12 @@ public class f7 {
 
         for (;;) {
             hadError = false;
+
             System.out.print("> ");
             String line = reader.readLine();
-            // if (line == null)
-            // break;
+            if (line == null)
+                break;
 
-            // run(line);
             Scanner scanner = new Scanner(line);
             List<Token> tokens = scanner.scanTokens();
 
