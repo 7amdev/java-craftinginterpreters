@@ -5,6 +5,9 @@ import static code.TokenType.*;
 import java.util.List;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+    private static class BreakException extends RuntimeException {
+    }
+
     private Environment environment = new Environment();
 
     void interpret(List<Stmt> statements) {
@@ -66,6 +69,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             case BANG:
                 return isEqual(left, right);
             case BANG_EQUAL:
+                return isEqual(left, right);
+            case EQUAL_EQUAL:
                 return isEqual(left, right);
         }
 
@@ -165,10 +170,18 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitWhileStmt(Stmt.While stmt) {
-        while (isTruthy(evaluate(stmt.condition))) {
-            execute(stmt.body);
+        try {
+            while (isTruthy(evaluate(stmt.condition))) {
+                execute(stmt.body);
+            }
+        } catch (BreakException e) {
         }
         return null;
+    }
+
+    @Override
+    public Void visitBreakStmt(Stmt.Break stmt) {
+        throw new BreakException();
     }
 
     @Override

@@ -24,6 +24,7 @@ public class generate_ast {
 
         defineAst(outputDir, "Stmt", Arrays.asList(
                 "Block             : List<Stmt> statements",
+                "Break             : ",
                 "Expression        : Expr expression",
                 "If                : Expr condition, Stmt thenBranch, Stmt elseBranch",
                 "Print             : Expr expression",
@@ -65,11 +66,18 @@ public class generate_ast {
 
             // Constructor
             writer.println("    " + className + "(" + fields + ") {");
-            String[] variables = fields.split(", ");
+            String[] variables;
+            if (fields.isEmpty()) {
+                variables = new String[0];
+            } else {
+                variables = fields.split(", ");
+            }
+
             for (String variable : variables) {
                 String variableName = variable.split(" ")[1];
                 writer.println("      this." + variableName + " = " + variableName + ";");
             }
+
             writer.println("    }");
 
             // Visitor Pattern
