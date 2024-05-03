@@ -5,10 +5,19 @@ import java.util.List;
 public class F7Function implements F7Callable {
     private final Stmt.Function declaration;
     private final Environment closure;
+    private final boolean isInitializer;
 
-    F7Function(Stmt.Function declaration, Environment closure) {
+    F7Function(Stmt.Function declaration, Environment closure, boolean isInitializer) {
+        this.isInitializer = isInitializer;
         this.closure = closure;
         this.declaration = declaration;
+    }
+
+    F7Function bind(F7Instance instance) {
+        Environment environment = new Environment(closure);
+        environment.define("this", instance);
+
+        return new F7Function(declaration, environment, isInitializer);
     }
 
     @Override
@@ -21,8 +30,14 @@ public class F7Function implements F7Callable {
         try {
             interpreter.executeBlock(declaration.body, environment);
         } catch (Return returnValue) {
+            if (isInitializer)
+                return closure.getAt(0, "this");
+
             return returnValue.value;
         }
+
+        if (isInitializer)
+            return closure.getAt(0, "this");
 
         return null;
     }
