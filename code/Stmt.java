@@ -5,8 +5,8 @@ import java.util.List;
 abstract class Stmt {
   interface Visitor<R> {
     R visitBlockStmt(Block stmt);
-    R visitBreakStmt(Break stmt);
     R visitClassStmt(Class stmt);
+    R visitBreakStmt(Break stmt);
     R visitExpressionStmt(Expression stmt);
     R visitFunctionStmt(Function stmt);
     R visitIfStmt(If stmt);
@@ -31,20 +31,10 @@ abstract class Stmt {
     final List<Stmt> statements;
   }
 
-  static class Break extends Stmt {
-    Break() {
-    }
-
-    @Override
-    <R> R accept(Visitor<R> visitor) {
-      return visitor.visitBreakStmt(this);
-    }
-
-  }
-
   static class Class extends Stmt {
-    Class(Token name, List<Stmt.Function> methods) {
+    Class(Token name, Expr.Variable superclass, List<Stmt.Function> methods) {
       this.name = name;
+      this.superclass = superclass;
       this.methods = methods;
     }
 
@@ -54,7 +44,19 @@ abstract class Stmt {
     }
 
     final Token name;
+    final Expr.Variable superclass;
     final List<Stmt.Function> methods;
+  }
+
+  static class Break extends Stmt {
+    Break() {
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitBreakStmt(this);
+    }
+
   }
 
   static class Expression extends Stmt {

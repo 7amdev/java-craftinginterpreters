@@ -7,16 +7,22 @@ import java.util.Map;
 
 public class F7Class implements F7Callable {
     final String name;
+    final F7Class superclass;
     private final Map<String, F7Function> methods;
 
-    F7Class(String name, Map<String, F7Function> methods) {
+    F7Class(String name, F7Class superclass, Map<String, F7Function> methods) {
         this.name = name;
+        this.superclass = superclass;
         this.methods = methods;
     }
 
     F7Function findMethod(String name) {
         if (methods.containsKey(name)) {
             return methods.get(name);
+        }
+
+        if (superclass != null) {
+            return superclass.findMethod(name);
         }
 
         return null;
@@ -29,7 +35,7 @@ public class F7Class implements F7Callable {
         if (initializer != null) {
             initializer.bind(instance).call(interpreter, arguments);
         }
-        instance.printFields();
+        // instance.printFields();
 
         return instance;
     }
